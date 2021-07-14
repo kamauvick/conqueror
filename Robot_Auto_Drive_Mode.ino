@@ -4,10 +4,8 @@
  * Autopilot - Green -> 0x873F3D2
 */
 
-//#include <Wire.h>
-//#include <LiquidCrystal_I2C.h>
 
-//LiquidCrystal_I2C lcd(0x27, 16, 2);
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 int trigPin = 40;
 int echoPin = 36;
@@ -16,6 +14,8 @@ int buzzer = 28;
 
 int RS = 42;
 int LS = 8;
+int back_RS = 32;
+int back_LS = 34;
 
 int In1 = 6;
 int In2 = 7;
@@ -27,16 +27,21 @@ int enB = 32;
 
 boolean right_sensor_value;
 boolean left_sensor_value;
+boolean back_right_sensor_value;
+boolean back_left_sensor_value;
+
 
 String RS_VAL = "RIGHT IR SENSOR";
 String LS_VAL = "LEFT IR SENSOR";
+String BACK_RS_VAL = "BACK RIGHT IR SENSOR";
+String BACK_LS_VAL = "BACK LEFT IR SENSOR";
 
 
 void setup() {
     Serial.begin(9600);
-//    lcd.begin(16,2);
+    lcd.begin(16,2);
 
-//    lcd.setCursor(0,0);
+   lcd.setCursor(0,0);
   
     pinMode(trigPin,OUTPUT);
     pinMode(echoPin,INPUT);
@@ -68,7 +73,6 @@ void loop() {
   Serial.println(LS_VAL);
   Serial.println(left_sensor_value);
 
-  
   autoPilotMode(trigPin, echoPin);
 }
 
@@ -86,24 +90,25 @@ int autoPilotMode(int trigPin, int echoPin){
 
   if(distance > 50 && right_sensor_value == 0 &&  left_sensor_value == 0){
    goForward();
-  } else {
-//    lcd.print("Object detected.....");
+  } 
+  else{
+   lcd.print("Object detected.....");
     justStop();
     beep();
-//    lcd.clear();
-//    delay(200);
-//    lcd.print("Slowing down..."); 
-//    delay(300);
-//    lcd.print("Auto Braking..."); 
-//    delay(200);
-//    lcd.clear();
+   lcd.clear();
+   delay(200);
+   lcd.print("Slowing down..."); 
+   delay(300);
+   lcd.print("Auto Braking..."); 
+   delay(200);
+   lcd.clear();
     delay(1000);
-//    lcd.clear();
-//    lcd.print("Re-routing..."); 
+   lcd.clear();
+   lcd.print("Re-routing..."); 
     goBackward();
     
-//    delay(1000);
-//    lcd.clear();
+   delay(1000);
+   lcd.clear();
     delay(300);
     justStop();
     delay(300);
@@ -113,10 +118,10 @@ int autoPilotMode(int trigPin, int echoPin){
     } else {
       goRight();
     }
-//    lcd.clear();
-//    lcd.print("Re-routing..."); 
+   lcd.clear();
+   lcd.print("Re-routing..."); 
     delay(500);
-//    lcd.clear();
+   lcd.clear();
     justStop();
     delay(1000);
   }
@@ -126,10 +131,10 @@ int autoPilotMode(int trigPin, int echoPin){
   Serial.println(indicator);
   Serial.println(distance);
   
-//  lcd.print(indicator);
-//  lcd.print(distance);
-  delay(500);
-//  lcd.clear();
+ lcd.print(indicator);
+ lcd.print(distance);
+ delay(500);
+ lcd.clear();
   
   return distance;
   }
@@ -168,16 +173,16 @@ void goLeft() {
 
 //Object Detection Warning beeps
 void beep(){
-    digitalWrite(buzzer, HIGH);
-    delay(90);
-    digitalWrite(buzzer, LOW);
-    delay(90);
-    digitalWrite(buzzer, HIGH);
-    delay(90);
-    digitalWrite(buzzer, LOW);
-    delay(90);
-    digitalWrite(buzzer, HIGH);
-    delay(90);
-    digitalWrite(buzzer, LOW);
-    delay(90);
+    for(int i=0; i<6; i++){
+        digitalWrite(buzzer, HIGH);
+        delay(90);
+    }
+}
+
+//reverse beeps
+void reverseBeeps(){
+    for(int i = 0; i < 6; i++){
+        digitalWrite(buzzer, HIGH);
+        delay(200);
+    }
 }
